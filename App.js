@@ -1,20 +1,49 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View, Button } from 'react-native';
+import Information from './Information';
+import Radiobutton from './Radiobutton';
+import React, {useState} from 'react';
+import StyleSheet from './Styles';
 
 export default function App() {
+  const [gender, setGender] = useState('No gender selection');
+
+  const options = [
+    {
+      label: 'Male',
+      value: 'male'
+    },
+    {
+      label: 'Female',
+      value: 'female'
+    }
+  ]
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+    <View style={StyleSheet.container}>
+        {}
+      <Text style={StyleSheet.header}>Alcometer</Text>
+
+        <Information options={options} onPress={(value) => 
+          {setGender(value)}} style={{backgroundColor: 'red'}} />
+          <Text>{gender}</Text>
     </View>
+    
   );
 }
-
+/*
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+
+  },
+  button: {
+    marginBottom: 50,
+  },
+  header: {
+    margin: 20,
+    fontSize: 30,
   },
 });
+*/
