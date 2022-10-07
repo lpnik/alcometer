@@ -1,16 +1,40 @@
 import React, {useState, useEffect} from 'react'
-import { Text, TextInput, View, Button, Pressable } from 'react-native';
-import {Picker} from '@react-native-picker/picker';
-import Radiobutton from './Radiobutton';
+import { Text, TextInput, View, Button, Pressable, Alert } from 'react-native';
 import StyleSheet from './Styles';
+import Dropdown from './Dropdown';
+import {Picker} from '@react-native-picker/picker';
 
-export default function Information({options, onPress, style}) {
+
+export default function Information({options, style, onPress}) {
     const [weight, setWeight] = useState(0)
-    const [bottles, setBottles] = useState()
-    const [time, setTime] = useState()
     const [joku, setJoku] = useState(0)
     const [value, setValue] = useState(null);
     const [risk, setRisk] = useState('');
+    const [bottles, setBottles] = useState(0);
+    const [time, setTime] = useState(0);
+
+  
+  
+    const bottlesList =  [
+        {label: '1', value: 1},
+        {label: '2', value: 2}, 
+        {label: '3', value: 3},
+        {label: '4', value: 4},        
+        {label: '5', value: 5},
+        {label: '6', value: 6},       
+        {label: '7', value: 7},
+        {label: '8', value: 8},        
+        {label: '9', value: 9},
+        {label: '10', value: 10}
+    ]
+  
+    const timeList = [
+      {label: '1', value: 1},
+      {label: '2', value: 2}, 
+      {label: '3', value: 3},
+      {label: '4', value: 4},        
+      {label: '5', value: 5},
+    ]
 
     function handlePress(selected) {
         setValue(selected);
@@ -46,20 +70,32 @@ export default function Information({options, onPress, style}) {
         } else {
             result = gramsLeft/(weight * 0.6)
         }
-        setJoku(result)
-        console.log(result, "result")
 
-        
-        if(result <= 0.5) {
-          color = "green"
-        } else if (result >= 0.5 < 1) {
-          color = "yellow"
-        } else if (result >= 1) {
-          color = "red"
+        if(weight == 0) {
+          Alert.alert('Weight is not typed')
         }
 
-        setRisk(color);
-        console.log(color)
+        if(result > 0) {
+          setJoku(result)
+        }
+         else {
+          setJoku(0)
+         }
+        console.log(result, "result")
+
+        if (result > 0) {
+          if(result = 0 && result <= 0.5) {
+            color = "#73E484"
+          } if (result >= 0.5 && result < 1) {
+            color = "#FFDD03"
+          } if (result >= 1) {
+            color = "#F93838"
+          }
+  
+          setRisk(color);
+          console.log(color)
+        }
+
     }
 
   return (
@@ -69,82 +105,50 @@ export default function Information({options, onPress, style}) {
         value={weight}
         onChangeText={text =>
         setWeight(text)} keyboardType='num-pad' />
-      <Text style={StyleSheet.title}>Bottles</Text>
+            <Text style={StyleSheet.title}>Bottles</Text>
       <Picker
         style={StyleSheet.picker}
+        mode="dropdown"
         selectedValue={bottles}
         onValueChange={(bottlesValue) => 
-        setBottles(bottlesValue)}>
-          <Picker.Item label='1' value='1' />
-          <Picker.Item label='2' value='2' />
-          <Picker.Item label='3' value='3' />
-          <Picker.Item label='4' value='4' />
-          <Picker.Item label='5' value= '5' />
-          <Picker.Item label='6' value= '6' />
-          <Picker.Item label='7' value= '7' />
-          <Picker.Item label='8' value= '8' />
-          <Picker.Item label='9' value= '9' />
-          <Picker.Item label='10' value= '10' />
+        setBottles(bottlesValue)} >
+          {
+            bottlesList.map((bottles, index) => {
+              return (<Picker.Item key={index} label={bottles.label} value={bottles.value} />)
+            })
+          }    
       </Picker>
       <Text style={StyleSheet.title}>Time</Text>
       <Picker
         style={StyleSheet.picker}
+        mode="dropdown"
         selectedValue={time}
         onValueChange={(timeValue) => 
-          setTime(timeValue)}>
-          <Picker.Item label='1' value='1' />
-          <Picker.Item label='2' value='2' />
-          <Picker.Item label='3' value='3' />
-          <Picker.Item label='4' value='4' />
-          <Picker.Item label='5' valuea='5' />
+        setTime(timeValue)} >
+          {
+            timeList.map((time, index) => {
+              return (<Picker.Item key={index} label={time.label} value={time.value} />)
+            })
+          }    
       </Picker>
-
       <Text style={StyleSheet.title}>Gender</Text>
         {
         options.map((item) => (
-            <View key = {item.value} style={[StyleSheet.buttonContainer, style]}>
-                <Text style={StyleSheet.label}> {item.label}</Text>
-                <Pressable style={StyleSheet.circle} onPress={() => handlePress(item.value)}>
-                    {value === item.value && <View style={StyleSheet.checkedCircle}/>}
-                </Pressable>
+            <View style={StyleSheet.gender}>
+              <View key = {item.value} style={[StyleSheet.buttonContainer, style]}>
+                  <Text style={StyleSheet.label}> {item.label}</Text>
+                  <Pressable style={StyleSheet.circle} onPress={() => handlePress(item.value)}>
+                      {value === item.value && <View style={StyleSheet.checkedCircle}/>}
+                  </Pressable>
+              </View>
             </View>
         ))
         }
-
-
-      <Button style={StyleSheet.button} title="Calculate" onPress={calculate} ></Button>
-      <Text>{joku.toFixed(2)}</Text>
-      <Text>{risk}</Text>
-
+      <Button color='#844CB6' title="Calculate" onPress={calculate} ></Button>
+      <Text style={StyleSheet.risk} >
+      <Text style={{color: risk, borderColor: 'black', borderWidth: 1}}>{joku.toFixed(2)}</Text>
+      </Text>
+      
     </View>
   );
 }
-/*
-    const bottle = [
-      {label: '1', value: 0.33},
-      {label: '2', value: 0.66},
-      {label: '3', value: 0.99},
-      {label: '4', value: 1.32},
-      {label: '5', value: 1.65},
-      {label: '6', value: 1.98},
-      {label: '7', value: 2.31},
-      {label: '8', value: 2.64},
-      {label: '9', value: 2.97},
-      {label: '10', value: 3.3},
-    ]
-
-    const hours = [
-      {label: '1', value: 1},
-      {label: '2', value: 2},
-      {label: '3', value: 3},
-      {label: '4', value: 4},
-      {label: '5', value: 5},
-    ]
-*/
-/*
-      <Text>{bottles} bottles</Text>
-      <Text>{litres} litres</Text>
-      <Text>{grams} grams</Text>
-      <Text>{burning} burning</Text>
-      <Text>{gramsLeft} gramsLeft</Text>
-*/
